@@ -1,19 +1,19 @@
-version: '3.3'
+# THIS DOCKERCOMPOSE should only be used if you choose to run both admin and client on the same machine
+# this means same IP ; without filtering or authentication, regular users can access admin service.
+
 services:
-  db:
-    image: mysql:9
-    restart: always
-    environment:
-      MYSQL_DATABASE: 'api'
-      MYSQL_USER: 'user'
-      MYSQL_PASSWORD: 'password'
-      MYSQL_ROOT_PASSWORD: 'password'
+  admin-api:
+    container_name: go-admin-api
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
     ports:
-      - '3306:3306'
-    expose:
-      - '3306'
-    volumes:
-      - db-data:/var/lib/mysql
-      - ./data/init.sql:/docker-entrypoint-initdb.d/init.sql
-volumes:
-  db-data:
+      - 3031:3031
+  
+  client-api:
+    container_name: go-client-api
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - 3030:3030
