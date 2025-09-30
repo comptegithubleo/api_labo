@@ -5,9 +5,13 @@ import (
 	"log"
 	api "main/api/v1"
 	"net/http"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+
+	godotenv.Load(".env")
 
 	http.HandleFunc("GET /v1/users", api.GetUsers)
 	http.HandleFunc("POST /v1/users", api.CreateUser)
