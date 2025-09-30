@@ -21,6 +21,6 @@ func main() {
 		fmt.Fprintf(w, "Landing page admin api\n")
 	})
 
-	log.Println("Starting admin api server on 3031")
-	http.ListenAndServe(":3031", nil)
+	log.Println("Starting router api server on 3032")
+	http.ListenAndServe(":3032", nil)
 }

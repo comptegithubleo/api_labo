@@ -2,6 +2,8 @@ package v1
 
 import (
 	"fmt"
+	"log"
+	"main/utils"
 	"net/http"
 )
 
@@ -17,6 +19,10 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 		// iterate over all eth1.X subinterfaces and get numbers
 		// could be heavy + deadlock on /etc/network/interface file...
 		// maybe run a script every X that reads file and store in json ?
+		stdout, stderr := utils.Exec("sh", "-c", "echo hello; echo 1>&2 error")
+		log.Println("stdout: ", stdout)
+		log.Println("stderr: ", stderr)
+
 		fmt.Fprintf(w, "[admin] get all users\n")
 	}
 }
