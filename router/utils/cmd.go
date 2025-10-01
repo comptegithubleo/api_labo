@@ -21,7 +21,7 @@ func Exec(name string, args ...string) (string, string) {
 	}
 
 	if err := cmd.Start(); err != nil {
-		log.Println("[X] Error starting cmd : ")
+		log.Println("[X] Error starting cmd : ", err)
 	}
 
 	stdout_, _ := io.ReadAll(stdoutBytes)
