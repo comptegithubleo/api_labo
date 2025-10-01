@@ -6,7 +6,7 @@ import (
 )
 
 func GetUserId() (int, error) {
-	addr := "172.16.1.111:60652" //hardcoded for now. When deployed, use r.RemoteAddr
+	addr := "172.16.0.10:60652" //hardcoded for now. When deployed, use r.RemoteAddr
 
 	host, _, err := net.SplitHostPort(addr)
 	if err != nil {

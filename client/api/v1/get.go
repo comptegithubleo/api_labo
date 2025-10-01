@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-type PendingConnection struct {
+type PendingInvites struct {
 	From int `json:"from"`
 	To   int `json:"to"`
 }
@@ -32,11 +32,10 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetInvites(w http.ResponseWriter, r *http.Request) {
-	//based on user authentication (ip), hide all pending invites except his
 	response, err := http.Get("http://localhost:3032/v1/invites") //hardcoded for now
 	if err != nil {
 		http.Error(w, "Failed to retrieve invites", http.StatusInternalServerError)
-		log.Println("[X] Error GetUsers http.Get: ", err)
+		log.Println("[X] Error GetInvites http.Get: ", err)
 		return
 	}
 	defer response.Body.Close()
@@ -45,19 +44,36 @@ func GetInvites(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	var invites []PendingConnection
+	var invites []PendingInvites
 	json.Unmarshal(invitesResponse, &invites)
-	
-	log.Println(invitesResponse)
+
+	//from his ip, we get his id, hide all pending invites that's not his
+	user_id, err := utils.GetUserId()
+	if err != nil {
+		log.Println("[X] Error GetInvites GetUserId: ", err)
+		http.Error(w, "Failed to parse your ip to authenticate", http.StatusBadRequest)
+		return
+	}
+	var filteredInvites []PendingInvites
 	for i := 0; i < len(invites); i++ {
-		log.Println(invites[i].From)
+		if invites[i].From == user_id || invites[i].To == user_id {
+			filteredInvites = append(filteredInvites, invites[i])
+		}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	if err := json.NewEncoder(w).Encode(filteredInvites); err != nil {
+		http.Error(w, "Failed to retrieve invites", http.StatusInternalServerError)
+		log.Println("[X] Error GetInvites json.Encode: ", err)
+		return
 	}
 }
 
 func GetPoolMembers(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetUserId()
 	if err != nil {
-		log.Println("[X] Error GetUsers: ", err)
+		log.Println("[X] Error GetPoolMembers GetUserId: ", err)
 		http.Error(w, "Failed to parse your ip to authenticate", http.StatusBadRequest)
 		return
 	}
