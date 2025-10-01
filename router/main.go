@@ -16,6 +16,10 @@ func main() {
 	http.HandleFunc("PUT /v1/users/{id}", api.ClearUser) //reset user info & pool
 	http.HandleFunc("DELETE /v1/users/{id}", api.DeleteUser)
 
+	http.HandleFunc("POST /v1/pool/members/{id}", api.AddPoolMember) //add member to pool
+	http.HandleFunc("DELETE /v1/pool/members/{id}", api.DeletePoolMember)
+
+
 	http.HandleFunc("GET /v1/status", api.Status) //server status
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

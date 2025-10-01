@@ -70,7 +70,9 @@ func GetInvites(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetPoolMembers(w http.ResponseWriter, r *http.Request) {
+// Deprecated because available in GetUsers data ?
+
+/* func GetPoolMembers(w http.ResponseWriter, r *http.Request) {
 	id, err := utils.GetUserId()
 	if err != nil {
 		log.Println("[X] Error GetPoolMembers GetUserId: ", err)
@@ -80,7 +82,7 @@ func GetPoolMembers(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "id is : %d\n", id)
 	fmt.Fprintf(w, "pool members\n")
 }
-
+ */
 func Status(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "[client] server status\n")
 }

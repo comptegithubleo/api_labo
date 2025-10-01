@@ -13,3 +13,7 @@ func ClearUser(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 	fmt.Fprintf(w, "clear user %s\n", id)
 }
+
+func AddPoolMember(w http.ResponseWriter, r *http.Request) {
+
+}
