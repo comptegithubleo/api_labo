@@ -1,9 +1,11 @@
 package utils
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"os/exec"
+	"strings"
 )
 
 // executes an os commands, returns stdout & stderr
@@ -21,7 +23,7 @@ func Exec(name string, args ...string) (string, string) {
 	}
 
 	if err := cmd.Start(); err != nil {
-		log.Println("[X] Error starting cmd : ", err)
+		return "", err.Error()
 	}
 
 	stdout_, _ := io.ReadAll(stdoutBytes)
@@ -32,4 +34,15 @@ func Exec(name string, args ...string) (string, string) {
 	cmd.Wait()
 
 	return string(stdout_), string(stderr_)
+}
+
+func UpdateData() {
+	// iterate over all eth1.X subinterfaces and get numbers
+	// could be heavy + deadlock on /etc/network/interface file...
+	// maybe run a script every X that reads file and store in json ?
+	stdout, stderr := Exec("./scripts/getUsers.sh")
+	fmt.Println(stderr)
+
+	users := strings.Split(strings.TrimSpace(stdout), "\n")
+	fmt.Println(users)
 }

@@ -8,6 +8,6 @@ vlan_id=$(grep -oE 'vlan[0-9]{1,4}' /etc/network/interfaces \
 
 echo $vlan_id
 
-wg_ip=$(printf "10.%d.%d.0" $((vlan_id / 100)) $((vlan_id % 100)))
+wg_ip=$(printf "10.%d.%d.0" $((vlan_id / 255)) $((vlan_id % 255)))
 
 echo $wg_ip

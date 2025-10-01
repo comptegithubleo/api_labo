@@ -11,6 +11,7 @@ import (
 func main() {
 
 	http.HandleFunc("GET /v1/users", api.GetUsers)
+	http.HandleFunc("GET /v1/invites", api.GetPendingConnections)
 	http.HandleFunc("POST /v1/users", api.CreateUser)
 	http.HandleFunc("PUT /v1/users/{id}", api.ClearUser) //reset user info & pool
 	http.HandleFunc("DELETE /v1/users/{id}", api.DeleteUser)
