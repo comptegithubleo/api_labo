@@ -9,3 +9,7 @@ func AddPoolMember(w http.ResponseWriter, r *http.Request) {
 	id := r.PathValue("id")
 	fmt.Fprintf(w, "add pool member %s\n", id)
 }
+
+func ClearUser(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "clearing myself\n")
+}

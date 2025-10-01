@@ -7,7 +7,9 @@ import (
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "create user\n")
+}
 
-	//je ne suis pas certain mais si j'ai bien compris:
-
+func ClearUser(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	fmt.Fprintf(w, "clear user %s\n", id)
 }

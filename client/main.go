@@ -9,10 +9,11 @@ import (
 
 func main() {
 
+	http.HandleFunc("GET /v1/users", api.GetUsers)
+	http.HandleFunc("POST /v1/users/me", api.ClearUser)
 	http.HandleFunc("GET /v1/pool/members", api.GetPoolMembers)
 	http.HandleFunc("POST /v1/pool/members/{id}", api.AddPoolMember) //add member to pool
 	http.HandleFunc("DELETE /v1/pool/members/{id}", api.DeletePoolMember)
-	http.HandleFunc("GET /v1/users", api.GetUsers)
 
 	http.HandleFunc("GET /v1/status", api.Status) //server status
 

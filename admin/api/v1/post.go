@@ -20,3 +20,8 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	command, _ := http2curl.GetCurlCommand(req)
 	fmt.Println(command) */
 }
+
+func ClearUser(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	fmt.Fprintf(w, "clear user %s\n", id)
+}

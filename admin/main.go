@@ -15,7 +15,7 @@ func main() {
 
 	http.HandleFunc("GET /v1/users", api.GetUsers)
 	http.HandleFunc("POST /v1/users", api.CreateUser)
-	http.HandleFunc("PUT /v1/users/{id}", api.ClearUser) //reset user info & pool
+	http.HandleFunc("POST /v1/users/{id}", api.ClearUser) //reset user info & pool
 	http.HandleFunc("DELETE /v1/users/{id}", api.DeleteUser)
 
 	http.HandleFunc("GET /v1/status", api.Status) //server status
