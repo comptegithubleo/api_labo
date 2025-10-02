@@ -11,19 +11,18 @@ import (
 func main() {
 
 	http.HandleFunc("GET /v1/users", api.GetUsers)
-	http.HandleFunc("GET /v1/invites", api.GetPendingConnections)
+	http.HandleFunc("GET /v1/invites", api.GetPendingInvites)
 	http.HandleFunc("POST /v1/users", api.CreateUser)
 	http.HandleFunc("PUT /v1/users/{id}", api.ClearUser) //reset user info & pool
 	http.HandleFunc("DELETE /v1/users/{id}", api.DeleteUser)
 
-	http.HandleFunc("POST /v1/pool/members/{id}", api.AddPoolMember) //add member to pool
-	http.HandleFunc("DELETE /v1/pool/members/{id}", api.DeletePoolMember)
-
+	http.HandleFunc("POST /v1/pool/add/{id}", api.AddPoolMember) //add member to pool
+	http.HandleFunc("POST /v1/pool/delete/{id}", api.DeletePoolMember)
 
 	http.HandleFunc("GET /v1/status", api.Status) //server status
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Landing page admin api\n")
+		fmt.Fprintf(w, "Landing page router api\n")
 	})
 
 	log.Println("Starting router api server on 3032")

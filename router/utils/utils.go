@@ -1,11 +1,12 @@
 package utils
 
 import (
-	"fmt"
+	"encoding/json"
+	"errors"
 	"io"
 	"log"
+	"os"
 	"os/exec"
-	"strings"
 )
 
 // executes an os commands, returns stdout & stderr
@@ -36,13 +37,125 @@ func Exec(name string, args ...string) (string, string) {
 	return string(stdout_), string(stderr_)
 }
 
-func UpdateData() {
-	// iterate over all eth1.X subinterfaces and get numbers
-	// could be heavy + deadlock on /etc/network/interface file...
-	// maybe run a script every X that reads file and store in json ?
-	stdout, stderr := Exec("./scripts/getUsers.sh")
-	fmt.Println(stderr)
-
-	users := strings.Split(strings.TrimSpace(stdout), "\n")
-	fmt.Println(users)
+func AddConnection(user_a, user_b int) error {
+	//todo
+	return nil
 }
+func AreConnected(user_a, user_b int) (bool, error) {
+	users, err := GetJSONUsers()
+	if err != nil {
+		return false, err
+	}
+
+	for _, user := range users {
+		if user.ID == user_a || user.ID == user_b {
+			for _, connection := range user.Connections {
+				if connection == user_a || connection == user_b {
+					return true, nil
+				}
+			}
+			break
+		}
+	}
+
+	return false, nil
+}
+
+func AddInvite(user_a, user_b int) error {
+	// if already connected, return
+	connected, err := AreConnected(user_a, user_b)
+	if err != nil {
+		return err
+	}
+	if connected {
+		return errors.New("Already connected")
+	}
+
+	invites, err := GetJSONInvites()
+	if err != nil {
+		return err
+	}
+	for i := 0; i < len(invites); i++ {
+		if invites[i].From == user_a && invites[i].To == user_b {
+			return errors.New("Already invited") // already exists do nothing
+		}
+		if invites[i].From == user_b && invites[i].To == user_a {
+			// accept invite : remove invite && add user connections
+			invites[i] = invites[len(invites)-1]
+			invites = invites[:len(invites)-1]
+			err = WriteJSONInvites(invites)
+			if err != nil {
+				return err
+			}
+
+			AddConnection(user_a, user_b)
+			return nil
+		}
+	}
+
+	// invite was not found, create one
+	invites = append(invites, PendingInvite{
+		From: user_a,
+		To:   user_b,
+	})
+
+	err = WriteJSONInvites(invites)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func RemoveInvite(invites PendingInvites, user_a, user_b int) {
+	for i := 0; i < len(invites); i++ {
+		if invites[i].From == user_a && invites[i].To == user_b ||
+			invites[i].From == user_b && invites[i].To == user_a {
+			//remove from invite, add connection to users.json
+			// https://go.dev/wiki/SliceTricks#delete-without-preserving-order because faster
+			invites[i] = invites[len(invites)-1]
+			invites = invites[:len(invites)-1]
+		}
+	}
+}
+
+func RemoveConnection(user_a, user_b int) error {
+
+	data, err := os.ReadFile("data/users.json")
+	if err != nil {
+		return errors.New("Opening file users failed")
+	}
+	var users []User
+	json.Unmarshal(data, &users)
+
+	for i := range users {
+		if users[i].ID == user_a {
+			for j := 0; j < len(users[i].Connections); j++ {
+				if users[i].Connections[j] == user_b {
+					users[i].Connections[j] = users[i].Connections[len(users[i].Connections)-1]
+					users[i].Connections = users[i].Connections[:len(users[i].Connections)-1]
+					break
+				}
+			}
+			break
+		}
+	}
+
+	data, err = json.Marshal(users)
+	if err != nil {
+		return errors.New("Failed to Marshal new json for users")
+	}
+
+	err = os.WriteFile("data/users.json", data, 0644)
+	if err != nil {
+		return errors.New("Failed to write json to users")
+	}
+
+	return nil
+}
+
+/* 	stdout, stderr := Exec("./scripts/getUsers.sh")
+fmt.Println(stderr)
+
+users := strings.Split(strings.TrimSpace(stdout), "\n")
+fmt.Println(users) */

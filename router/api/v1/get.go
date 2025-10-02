@@ -21,11 +21,11 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
-func GetPendingConnections(w http.ResponseWriter, r *http.Request) {
-	data, err := os.ReadFile("data/pending.json")
+func GetPendingInvites(w http.ResponseWriter, r *http.Request) {
+	data, err := os.ReadFile("data/invites.json")
 	if err != nil {
 		log.Println("[X] Error GetUsers: ", err)
-		http.Error(w, "Failed to retrieve pending connections", http.StatusInternalServerError)
+		http.Error(w, "Failed to retrieve pending invites", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
