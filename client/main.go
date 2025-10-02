@@ -16,8 +16,8 @@ func main() {
 	// Deprecated because available in GetUsers data ?
 	//http.HandleFunc("GET /v1/pool/members", api.GetPoolMembers)
 
-	http.HandleFunc("POST /v1/pool/members/{id}", api.AddPoolMember) //add member to pool
-	http.HandleFunc("DELETE /v1/pool/members/{id}", api.DeletePoolMember)
+	http.HandleFunc("POST /v1/pool/add/{id}", api.AddPoolMember) //add member to pool
+	http.HandleFunc("POST /v1/pool/delete/{id}", api.DeletePoolMember)
 
 	http.HandleFunc("GET /v1/status", api.Status) //server status
 

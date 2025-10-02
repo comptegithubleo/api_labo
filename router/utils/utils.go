@@ -38,9 +38,38 @@ func Exec(name string, args ...string) (string, string) {
 }
 
 func AddConnection(user_a, user_b int) error {
-	//todo
+	users, err := GetJSONUsers()
+	if err != nil {
+		return err
+	}
+
+	count := 0
+	for i := range users {
+		if users[i].ID == user_a {
+			users[i].Connections = append(users[i].Connections, user_b)
+			count++
+		}
+		if users[i].ID == user_b {
+			users[i].Connections = append(users[i].Connections, user_a)
+			count++
+		}
+		if count == 2 {
+			break
+		}
+	}
+
+	if count != 2 {
+		return errors.New("Failed to append connections bilaterally. Check or reset user connections")
+	}
+
+	err = WriteJSONUsers(users)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
+
 func AreConnected(user_a, user_b int) (bool, error) {
 	users, err := GetJSONUsers()
 	if err != nil {
@@ -68,7 +97,7 @@ func AddInvite(user_a, user_b int) error {
 		return err
 	}
 	if connected {
-		return errors.New("Already connected")
+		return errors.New("Already connected 👑🫑")
 	}
 
 	invites, err := GetJSONInvites()
@@ -77,7 +106,7 @@ func AddInvite(user_a, user_b int) error {
 	}
 	for i := 0; i < len(invites); i++ {
 		if invites[i].From == user_a && invites[i].To == user_b {
-			return errors.New("Already invited") // already exists do nothing
+			return errors.New("Already invited 🐡💀") // already exists do nothing
 		}
 		if invites[i].From == user_b && invites[i].To == user_a {
 			// accept invite : remove invite && add user connections
@@ -89,10 +118,12 @@ func AddInvite(user_a, user_b int) error {
 			}
 
 			AddConnection(user_a, user_b)
+			log.Printf("usr%d -> usr%d : Invite accepted, connection created 👺🚿", user_a, user_b)
 			return nil
 		}
 	}
 
+	log.Printf("usr%d -> usr%d : Invite created 🎀✨", user_a, user_b)
 	// invite was not found, create one
 	invites = append(invites, PendingInvite{
 		From: user_a,

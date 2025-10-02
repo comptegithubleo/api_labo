@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-type PendingInvites struct {
+type PendingInvite struct {
 	From int `json:"from"`
 	To   int `json:"to"`
 }
@@ -44,7 +44,7 @@ func GetInvites(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	var invites []PendingInvites
+	var invites []PendingInvite
 	json.Unmarshal(invitesResponse, &invites)
 
 	//from his ip, we get his id, hide all pending invites that's not his
@@ -54,7 +54,7 @@ func GetInvites(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to parse your ip to authenticate", http.StatusBadRequest)
 		return
 	}
-	var filteredInvites []PendingInvites
+	var filteredInvites []PendingInvite
 	for i := 0; i < len(invites); i++ {
 		if invites[i].From == user_id || invites[i].To == user_id {
 			filteredInvites = append(filteredInvites, invites[i])
@@ -72,17 +72,18 @@ func GetInvites(w http.ResponseWriter, r *http.Request) {
 
 // Deprecated because available in GetUsers data ?
 
-/* func GetPoolMembers(w http.ResponseWriter, r *http.Request) {
-	id, err := utils.GetUserId()
-	if err != nil {
-		log.Println("[X] Error GetPoolMembers GetUserId: ", err)
-		http.Error(w, "Failed to parse your ip to authenticate", http.StatusBadRequest)
-		return
+/*
+	 func GetPoolMembers(w http.ResponseWriter, r *http.Request) {
+		id, err := utils.GetUserId()
+		if err != nil {
+			log.Println("[X] Error GetPoolMembers GetUserId: ", err)
+			http.Error(w, "Failed to parse your ip to authenticate", http.StatusBadRequest)
+			return
+		}
+		fmt.Fprintf(w, "id is : %d\n", id)
+		fmt.Fprintf(w, "pool members\n")
 	}
-	fmt.Fprintf(w, "id is : %d\n", id)
-	fmt.Fprintf(w, "pool members\n")
-}
- */
+*/
 func Status(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "[client] server status\n")
 }
