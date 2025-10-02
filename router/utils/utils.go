@@ -1,11 +1,9 @@
 package utils
 
 import (
-	"encoding/json"
 	"errors"
 	"io"
 	"log"
-	"os"
 	"os/exec"
 )
 
@@ -152,34 +150,54 @@ func RemoveInvite(invites PendingInvites, user_a, user_b int) {
 
 func RemoveConnection(user_a, user_b int) error {
 
-	data, err := os.ReadFile("data/users.json")
+	users, err := GetJSONUsers()
 	if err != nil {
-		return errors.New("Opening file users failed")
+		return err
 	}
-	var users []User
-	json.Unmarshal(data, &users)
 
+	connected, err := AreConnected(user_a, user_b)
+	if err != nil {
+		return err
+	}
+	if !connected {
+		return errors.New("Can't remove connection between two unconnected users")
+	}
+
+	count := 0
 	for i := range users {
 		if users[i].ID == user_a {
 			for j := 0; j < len(users[i].Connections); j++ {
 				if users[i].Connections[j] == user_b {
 					users[i].Connections[j] = users[i].Connections[len(users[i].Connections)-1]
 					users[i].Connections = users[i].Connections[:len(users[i].Connections)-1]
+					count++
 					break
 				}
 			}
+		}
+		if users[i].ID == user_b {
+			for j := 0; j < len(users[i].Connections); j++ {
+				if users[i].Connections[j] == user_a {
+					users[i].Connections[j] = users[i].Connections[len(users[i].Connections)-1]
+					users[i].Connections = users[i].Connections[:len(users[i].Connections)-1]
+					count++
+					break
+				}
+			}
+		}
+		if count == 2 {
+			log.Printf("usr%d <-> usr%d : Connection removed ⛓️‍💥👁\n", user_a, user_b)
 			break
 		}
 	}
 
-	data, err = json.Marshal(users)
-	if err != nil {
-		return errors.New("Failed to Marshal new json for users")
+	if count != 2 {
+		return errors.New("Failed to remove connections bilaterally. Check or clean user connections")
 	}
 
-	err = os.WriteFile("data/users.json", data, 0644)
+	err = WriteJSONUsers(users)
 	if err != nil {
-		return errors.New("Failed to write json to users")
+		return err
 	}
 
 	return nil

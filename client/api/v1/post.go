@@ -60,6 +60,12 @@ func DeletePoolMember(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if strconv.Itoa(user_id) == target_id {
+		log.Printf("[X] Error usr%d is deleting himself 🗣🗣\n", user_id)
+		http.Error(w, "Can't delete yourself (yet)", http.StatusBadRequest)
+		return
+	}
+
 	body := `{"user_id":` + strconv.Itoa(user_id) + `}`
 	response, err := http.Post(
 		"http://localhost:3032/v1/pool/delete/"+target_id, //hardcoded for now

@@ -59,5 +59,12 @@ func DeletePoolMember(w http.ResponseWriter, r *http.Request) {
 	target_id, _ := strconv.Atoi(url.PathEscape(str_target_id))
 
 	err = utils.RemoveConnection(user.User_Id, target_id)
-	err = utils.RemoveConnection(target_id, user.User_Id)
+	if err != nil {
+		log.Printf("[X] Error DeletePoolMembers utils.RemoveConnection usr%d -> usr%d: %s\n", user.User_Id, target_id, err)
+		http.Error(w, "Failed to add new member", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "Member removed\n")
 }
