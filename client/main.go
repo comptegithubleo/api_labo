@@ -11,7 +11,7 @@ func main() {
 
 	http.HandleFunc("GET /v1/users", api.GetUsers)
 	http.HandleFunc("GET /v1/invites", api.GetInvites)
-	http.HandleFunc("POST /v1/users/me", api.ClearUser)
+	http.HandleFunc("PUT /v1/users/me", api.ClearUser)
 
 	// Deprecated because available in GetUsers data ?
 	//http.HandleFunc("GET /v1/pool/members", api.GetPoolMembers)

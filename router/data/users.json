@@ -1,1 +1,1 @@
-[{"id":10,"connections":[11,12,15],"active":true},{"id":11,"connections":[10],"active":false},{"id":12,"connections":[10,13],"active":true},{"id":13,"connections":[12],"active":false},{"id":14,"connections":[],"active":true},{"id":15,"connections":[10],"active":true}]
+[{"id":10,"connections":[11,15],"active":true},{"id":11,"connections":[10],"active":false},{"id":12,"connections":[],"active":true},{"id":13,"connections":[],"active":false},{"id":14,"connections":[],"active":true},{"id":15,"connections":[10],"active":true}]

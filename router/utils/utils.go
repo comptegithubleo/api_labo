@@ -208,3 +208,23 @@ fmt.Println(stderr)
 
 users := strings.Split(strings.TrimSpace(stdout), "\n")
 fmt.Println(users) */
+
+func RemoveConnections(user_id int) error {
+	users, err := GetJSONUsers()
+	if err != nil {
+		return err
+	}
+
+	for i := range users {
+		if users[i].ID == user_id {
+			for j := range users[i].Connections {
+				err := RemoveConnection(user_id, users[i].Connections[j])
+				if err != nil {
+					return err
+				}
+			}
+		}
+	}
+
+	return nil
+}

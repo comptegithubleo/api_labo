@@ -1,10 +1,10 @@
 package utils
 
-func RemoveAllConnections() {
+func NukeAllConnections() {
 
 }
 
-func RemoveAllInvites() {
+func NukeAllInvites() {
 
 }
 

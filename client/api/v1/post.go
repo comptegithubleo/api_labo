@@ -85,7 +85,3 @@ func DeletePoolMember(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintf(w, "%s", poolResponse)
 }
-
-func ClearUser(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "clearing myself\n")
-}

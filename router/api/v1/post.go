@@ -14,11 +14,6 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "create user\n")
 }
 
-func ClearUser(w http.ResponseWriter, r *http.Request) {
-	id := r.PathValue("id")
-	fmt.Fprintf(w, "clear user %s\n", id)
-}
-
 // if 12 adds 13 :
 //
 //	if invites contains "from 13 to 12", remove entry and add connections to users.json
